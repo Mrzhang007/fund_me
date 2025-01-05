@@ -1,4 +1,4 @@
-// 获取余额
+获取余额
 ```
 address(this).balance
 ```

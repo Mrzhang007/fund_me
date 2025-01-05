@@ -7,7 +7,8 @@ async function main() {
   const factory = await ethers.getContractFactory("FundMe");
   console.log("deploying contract");
   // deploy contract from factory
-  const fundMe = await factory.deploy("3600");
+  const lockTime: number = 360;
+  const fundMe = await factory.deploy(lockTime);
   await fundMe.waitForDeployment();
   console.log(
     `contract has been deployed successfully, contract address is ${fundMe.target}`,
@@ -21,7 +22,7 @@ async function main() {
     console.log("waiting for etherscan to get the contract");
     await fundMe.deploymentTransaction()?.wait(3);
     // verify contract
-    await verify(fundMe.target, ["3600"]);
+    await verify(fundMe.target, [lockTime]);
   } else {
     console.log("network is hardhat, skipped verification");
   }
