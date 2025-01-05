@@ -6,6 +6,7 @@ import "@nomicfoundation/hardhat-verify";
 
 const SEPOLIA_URL = process.env.SEPOLIA_URL;
 const FIRST_ACCOUNT = process.env.FIRST_ACCOUNT;
+const SECOND_ACCOUNT = process.env.SECOND_ACCOUNT;
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 
 const config: HardhatUserConfig = {
@@ -14,7 +15,7 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       url: SEPOLIA_URL,
-      accounts: [FIRST_ACCOUNT],
+      accounts: [FIRST_ACCOUNT, SECOND_ACCOUNT],
       chainId: 11155111,
     },
   },

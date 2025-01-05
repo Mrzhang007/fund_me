@@ -7,11 +7,12 @@ async function main() {
   const factory = await ethers.getContractFactory("FundMe");
   console.log("deploying contract");
   // deploy contract from factory
-  const lockTime: number = 360;
+  const lockTime: number = 300;
   const fundMe = await factory.deploy(lockTime);
   await fundMe.waitForDeployment();
+  const ownerAddress = fundMe.target;
   console.log(
-    `contract has been deployed successfully, contract address is ${fundMe.target}`,
+    `contract has been deployed successfully, contract address is ${ownerAddress}`
   );
 
   if (
@@ -26,6 +27,46 @@ async function main() {
   } else {
     console.log("network is hardhat, skipped verification");
   }
+
+  // 验证与合约交互、
+  // 1、使用第一个钱包账户fund。
+  // 获取signer
+  const [firstSigner, secondSigner] = await ethers.getSigners();
+  console.log("first signer", firstSigner);
+  // eth价格3620 usd 0.04 eth = 144.8 usd
+  const firstFundTx = await fundMe.connect(firstSigner).fund({
+    value: ethers.parseEther("0.04"),
+  });
+  //fund只能保证发送交易成功 还需等待交易完成、交易上链
+  await firstFundTx.wait();
+  // 2、检查contact balance。
+  const balance = await ethers.provider.getBalance(ownerAddress);
+  console.log(`contact balance is: ${balance}`);
+  // 3、使用第二个钱包账户fund。
+  const secondFundTx = await fundMe.connect(secondSigner).fund({
+    value: ethers.parseEther("0.05"),
+  });
+  await secondFundTx.wait();
+  // 4、检查contact balance。
+  const balanceAfterSecondAccountFund = await ethers.provider.getBalance(
+    ownerAddress
+  );
+  console.log(
+    `contact balance is: ${balanceAfterSecondAccountFund} after second account fund`
+  );
+  // 5、检查mapping fundAddressToAmount。
+  const firstAccountBalance = await fundMe.fundAddressToAmount(
+    firstSigner.address
+  );
+  console.log(
+    `first account ${firstSigner.address} balance is: ${firstAccountBalance}`
+  );
+  const secondAccountBalance = await fundMe.fundAddressToAmount(
+    secondSigner.address
+  );
+  console.log(
+    `first account ${secondSigner.address} balance is: ${secondAccountBalance}`
+  );
 }
 
 async function verify(address: string | Addressable, args: any[]) {

@@ -43,8 +43,7 @@ contract FundMe {
             "The target value was not reached"
         );
         // 提款  把钱都转给owner
-        bool success;
-        (success, ) = msg.sender.call{value: address(this).balance}("");
+        (bool success, ) = msg.sender.call{value: address(this).balance}("");
         require(success, "withdraw failed");
         fundAddressToAmount[msg.sender] = 0;
     }
@@ -57,10 +56,9 @@ contract FundMe {
         );
         require(fundAddressToAmount[msg.sender] != 0, "you have no fund");
         // 退款
-        bool success;
-        (success, ) = msg.sender.call{value: fundAddressToAmount[msg.sender]}(
-            ""
-        );
+        (bool success, ) = msg.sender.call{
+            value: fundAddressToAmount[msg.sender]
+        }("");
         require(success, "refund failed");
         // 退款成功清空
         fundAddressToAmount[msg.sender] = 0;
