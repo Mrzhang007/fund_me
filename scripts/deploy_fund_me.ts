@@ -10,9 +10,9 @@ async function main() {
   const lockTime: number = 300;
   const fundMe = await factory.deploy(lockTime);
   await fundMe.waitForDeployment();
-  const ownerAddress = fundMe.target;
+  const contractAddress = fundMe.target;
   console.log(
-    `contract has been deployed successfully, contract address is ${ownerAddress}`
+    `contract has been deployed successfully, contract address is ${contractAddress}`
   );
 
   if (
@@ -30,26 +30,26 @@ async function main() {
 
   // 验证与合约交互、
   // 1、使用第一个钱包账户fund。
+  // const owner = await fundMe.owner();
   // 获取signer
   const [firstSigner, secondSigner] = await ethers.getSigners();
-  console.log("first signer", firstSigner);
   // eth价格3620 usd 0.04 eth = 144.8 usd
   const firstFundTx = await fundMe.connect(firstSigner).fund({
-    value: ethers.parseEther("0.04"),
+    value: ethers.parseEther("0.1"),
   });
   //fund只能保证发送交易成功 还需等待交易完成、交易上链
   await firstFundTx.wait();
   // 2、检查contact balance。
-  const balance = await ethers.provider.getBalance(ownerAddress);
+  const balance = await ethers.provider.getBalance(contractAddress);
   console.log(`contact balance is: ${balance}`);
   // 3、使用第二个钱包账户fund。
   const secondFundTx = await fundMe.connect(secondSigner).fund({
-    value: ethers.parseEther("0.05"),
+    value: ethers.parseEther("0.15"),
   });
   await secondFundTx.wait();
   // 4、检查contact balance。
   const balanceAfterSecondAccountFund = await ethers.provider.getBalance(
-    ownerAddress
+    contractAddress
   );
   console.log(
     `contact balance is: ${balanceAfterSecondAccountFund} after second account fund`
