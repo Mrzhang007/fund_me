@@ -4,10 +4,10 @@ import { Addressable } from "ethers";
 
 async function main() {
   // create factory
-  const fundMeFactory = await ethers.getContractFactory("HelloWeb3");
+  const factory = await ethers.getContractFactory("FundMe");
   console.log("deploying contract");
   // deploy contract from factory
-  const fundMe = await fundMeFactory.deploy("zachary");
+  const fundMe = await factory.deploy("3600");
   await fundMe.waitForDeployment();
   console.log(
     `contract has been deployed successfully, contract address is ${fundMe.target}`,
@@ -21,7 +21,7 @@ async function main() {
     console.log("waiting for etherscan to get the contract");
     await fundMe.deploymentTransaction()?.wait(3);
     // verify contract
-    await verify(fundMe.target, ["zachary"]);
+    await verify(fundMe.target, ["3600"]);
   } else {
     console.log("network is hardhat, skipped verification");
   }
