@@ -16,16 +16,16 @@ contract FundMe {
     uint256 constant TARGET = 500 * 1e18;
     /** fund的最少数量 100 usd */
     uint256 constant MINI_VALUE = 100 * 1e18;
-    address constant DATA_FEED_ADDRESS =
-        0x694AA1769357215DE4FAC081bf1f309aDC325306;
+    // address constant PRICE_FEED_ADDRESS =
+    //     0x694AA1769357215DE4FAC081bf1f309aDC325306;
     AggregatorV3Interface immutable priceFeed;
 
-    constructor(uint256 _lockTime) {
+    constructor(uint256 _lockTime, address priceFeedAddress) {
         owner = msg.sender;
         lockTime = _lockTime;
         // 从block中获取部署的时间戳
         deployTimestamp = block.timestamp;
-        priceFeed = AggregatorV3Interface(DATA_FEED_ADDRESS);
+        priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     function fund() public payable fundOpen {

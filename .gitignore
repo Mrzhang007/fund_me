@@ -1,6 +1,8 @@
 node_modules
 .env
 .env.enc
+# hardhat-deploy 生成的文件
+/deployments
 
 # Hardhat files
 /cache

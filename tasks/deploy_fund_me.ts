@@ -1,18 +1,18 @@
 import { task } from "hardhat/config";
 import { Addressable } from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { FUND_ME_LOCK_TIME, testNetworkConfig } from "../helper.hardhat.config";
 
 /** params must be lowerCase */
 interface FundMeDeployArgs {
   locktime: string;
 }
 
-const DEFAULT_LOCK_TIME: string = "180";
 const DeployTask = task<FundMeDeployArgs>(
   "deploy_fund_me",
   "this is task to deploy FundMe contract"
 )
-  .addParam<string>("locktime", "contract lock time", DEFAULT_LOCK_TIME)
+  .addParam<string>("locktime", "contract lock time", FUND_ME_LOCK_TIME)
   .setAction(
     async (taskArgs: FundMeDeployArgs, hre: HardhatRuntimeEnvironment) => {
       console.log(`deploy fund me tasks args: `, taskArgs);
@@ -20,8 +20,10 @@ const DeployTask = task<FundMeDeployArgs>(
       const factory = await hre.ethers.getContractFactory("FundMe");
       console.log("deploying contract");
       // deploy contract from factory
+      const chainId = hre.network.config.chainId || 11155111;
+      const priceFeedAddress = testNetworkConfig[chainId].priceFeedAddress;
       const lockTime = taskArgs.locktime;
-      const fundMe = await factory.deploy(lockTime);
+      const fundMe = await factory.deploy(lockTime, priceFeedAddress);
       await fundMe.waitForDeployment();
       const ownerAddress = fundMe.target;
       console.log(

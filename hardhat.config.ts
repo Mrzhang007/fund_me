@@ -4,6 +4,7 @@ import * as envEnc from "@chainlink/env-enc";
 envEnc.config();
 import "@nomicfoundation/hardhat-verify";
 import "./tasks/index";
+import "hardhat-deploy";
 
 const SEPOLIA_URL = process.env.SEPOLIA_URL;
 const FIRST_ACCOUNT = process.env.FIRST_ACCOUNT;

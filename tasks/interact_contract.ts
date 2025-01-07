@@ -2,19 +2,19 @@ import { task } from "hardhat/config";
 import { Addressable } from "ethers";
 import { FundMe } from "../typechain-types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { FUND_ME_LOCK_TIME } from "../helper.hardhat.config";
 
 interface Args {
   address: string | Addressable;
-  locktime: string;
+  locktime?: string;
 }
 
-const DEFAULT_LOCK_TIME: string = "180";
 const InteractContract = task<Args>(
   "interact_contract",
   "check interact contract"
 )
   .addParam<string>("address", "contract address")
-  .addParam<string>("locktime", "contract lock time", DEFAULT_LOCK_TIME)
+  .addParam<string>("locktime", "contract lock time", FUND_ME_LOCK_TIME)
   .setAction(async (taskArgs: Args, hre: HardhatRuntimeEnvironment) => {
     console.log("interact_contract tasks params: ", taskArgs);
     const contractAddress = taskArgs.address;
