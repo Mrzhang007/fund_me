@@ -18,7 +18,7 @@ contract FundMe {
     uint256 constant MINI_VALUE = 100 * 1e18;
     // address constant PRICE_FEED_ADDRESS =
     //     0x694AA1769357215DE4FAC081bf1f309aDC325306;
-    AggregatorV3Interface immutable priceFeed;
+    AggregatorV3Interface private immutable priceFeed;
 
     constructor(uint256 _lockTime, address priceFeedAddress) {
         owner = msg.sender;
@@ -31,7 +31,7 @@ contract FundMe {
     function fund() public payable fundOpen {
         require(
             transformEth2Usd(msg.value) >= MINI_VALUE,
-            "you should fund 1 Finney at least"
+            "you should fund 100USD at least"
         );
         fundAddressToAmount[msg.sender] += msg.value;
     }
